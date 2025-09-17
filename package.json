@@ -1,0 +1,15 @@
+{
+  "name": "mcp-stub-server",
+  "version": "0.1.0",
+  "description": "Lightweight MCP stub server for staging/testing. Provides call/sms/crm/calendar/audit endpoints.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Viss|Ai",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
