@@ -1,16 +1,52 @@
 name: SSOT Checks
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'   # 04:00 UTC (~07:00 LT vasarą)
   push:
     branches: [ feat/ssot-gate-ci ]
     paths:
       - 'ssot_kernel_manifest.json'
       - 'ssot_kernel_ci_tests.yaml'
-      - '.github/workflows/ssot-checks.yaml'
+      - '.github/workflows/ssot-checks.yml'
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate manifest JSON
-        run: jq -e . ssot_kernel_manifest.json || echo "manifest missing (ok for skeleton)
+
+      # Linux įrankiai
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      # Python + PyYAML
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python deps
+        run: pip install pyyaml
+
+      # Manifestas yra optional (skeleto režimas OK)
+      - name: Validate manifest JSON (optional)
+        run: |
+          if test -f ssot_kernel_manifest.json; then
+            jq -e . ssot_kernel_manifest.json
+          else
+            echo "manifest missing (ok for skeleton)"
+          fi
+
+      # YAML parse – veiks ir su paprastu 'PLACEHOLDER'
+      - name: Validate tests YAML parses
+        run: |
+          python3 - <<'PY'
+          import yaml, sys, os
+          p = 'ssot_kernel_ci_tests.yaml'
+          if not os.path.exists(p):
+              open(p,'w').write('placeholder: true\n')
+          yaml.safe_load(open(p))
+          print('yaml ok')
+          PY
