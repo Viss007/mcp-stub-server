@@ -1,1 +1,18 @@
-PLACEHOLDER
+name: OpenAPI Validate
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feat/ssot-gate-ci ]
+    paths:
+      - 'openapi.yaml'
+      - '.github/workflows/openapi-validate.yaml'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm install -g @redocly/cli
+      - run: redocly lint openapi.yaml
