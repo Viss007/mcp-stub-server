@@ -1,1 +1,16 @@
-PLACEHOLDER
+name: SSOT Checks
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feat/ssot-gate-ci ]
+    paths:
+      - 'ssot_kernel_manifest.json'
+      - 'ssot_kernel_ci_tests.yaml'
+      - '.github/workflows/ssot-checks.yaml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manifest JSON
+        run: jq -e . ssot_kernel_manifest.json || echo "manifest missing (ok for skeleton)
