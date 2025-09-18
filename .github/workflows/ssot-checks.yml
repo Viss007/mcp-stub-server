@@ -1,0 +1,11 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+  push:
+    branches: [ feat/ssot-gate-ci ]
+    paths:
+      - 'ssot_kernel_manifest.json'
+      - 'ssot_kernel_ci_tests.yaml'
+      - '.github/workflows/ssot-checks.yml'
+

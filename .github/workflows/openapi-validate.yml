@@ -1,0 +1,9 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+  push:
+    branches: [ feat/ssot-gate-ci ]
+    paths:
+      - 'openapi.yaml'
+      - '.github/workflows/openapi-validate.yml'
