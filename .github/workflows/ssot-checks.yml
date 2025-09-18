@@ -1,4 +1,16 @@
+name: SSOT Checks
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sanity - echo
+        run: echo "SSOT pipeline is alive"
