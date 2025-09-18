@@ -13,15 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sanity - list repo
+      - name: Setup Node (for npx)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sanity – list repo
         run: ls -la
 
-      - name: Validate OpenAPI if file exists
+      - name: Lint OpenAPI if present
+        shell: bash
         run: |
-          set -euxo pipefail
+          set -euo pipefail
           FILE="openapi.yaml"
-          if [ ! -f "$FILE" ]; then
-            echo "::warning title=openapi.yaml not found::Skipping validation"; exit 0
+          if [[ ! -f "$FILE" ]]; then
+            echo "::warning title=openapi.yaml not found::Skipping lint"; exit 0
           fi
-          npm -v || (corepack enable && corepack prepare pnpm@latest --activate || true)
           npx -y @redocly/cli@latest lint "$FILE"
