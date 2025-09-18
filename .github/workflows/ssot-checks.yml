@@ -1,11 +1,16 @@
+name: SSOT Checks
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'
-  push:
-    branches: [ feat/ssot-gate-ci ]
-    paths:
-      - 'ssot_kernel_manifest.json'
-      - 'ssot_kernel_ci_tests.yaml'
-      - '.github/workflows/ssot-checks.yml'
 
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sanity - echo
+        run: echo "SSOT pipeline is alive"
