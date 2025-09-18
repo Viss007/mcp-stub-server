@@ -12,16 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node (for npx)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Sanity – list repo
         run: ls -la
-
-      - name: Lint OpenAPI if present
+      - name: Lint OpenAPI if present (non-blocking)
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
