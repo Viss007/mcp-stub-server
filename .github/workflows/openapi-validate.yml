@@ -1,9 +1,27 @@
+name: OpenAPI Validate
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'
-  push:
-    branches: [ feat/ssot-gate-ci ]
-    paths:
-      - 'openapi.yaml'
-      - '.github/workflows/openapi-validate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sanity - list repo
+        run: ls -la
+
+      - name: Validate OpenAPI if file exists
+        run: |
+          set -euxo pipefail
+          FILE="openapi.yaml"
+          if [ ! -f "$FILE" ]; then
+            echo "::warning title=openapi.yaml not found::Skipping validation"; exit 0
+          fi
+          npm -v || (corepack enable && corepack prepare pnpm@latest --activate || true)
+          npx -y @redocly/cli@latest lint "$FILE"
